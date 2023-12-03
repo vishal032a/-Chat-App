@@ -1,14 +1,30 @@
 const path = require('path');
+const http = require('http');
 const express = require('express');
+const socketIO = require('socket.io');
 
+const publicPath = path.join(__dirname, '/../public');
+const port = process.env.PORT || 3000;
 
-const publicPath = path.join(__dirname,'/../public');
-var app = express();
+let app = express();
+let server = http.createServer(app);
 
+// Use the `serveClient` option to let Socket.IO handle its own route
+let io = socketIO(server, { serveClient: true });
 
-const port = process.env.PORT || 3000
 app.use(express.static(publicPath));
 
-app.listen(port,()=>{
-    console.log('sever is listening at port 3000');
-})
+io.on('connection', (socket) => {
+    console.log("A new user just connected");
+
+
+    socket.on('disconnect',()=>{
+        console.log('User was disconnected');
+    })
+});
+
+
+
+server.listen(port, () => {
+    console.log(`Server is listening at port ${port}`);
+});
