@@ -23,6 +23,20 @@ socket.on('disconnect',function (){
     console.log('disconnected from server.');
 });
 
+socket.on('updateUsersList',function(users){
+  let ol = document.createElement('ol');
+  users.forEach(function(user){
+    let li = document.createElement('li');
+    li.innerHTML = user;
+    ol.appendChild(li);
+  });
+
+  let usersList  = document.querySelector('#users');
+  usersList.innerHTML = "";
+  usersList.appendChild(ol);
+
+})
+
 socket.on('newMessage',function (message){
     const formattedTime = moment(message.createdAt).format('LT')
     const template = document.querySelector('#message-template').innerHTML;
